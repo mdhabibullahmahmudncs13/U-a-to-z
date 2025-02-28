@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Signup/Login</title>
+    <style>
+        /* Reuse the same CSS variables and styles from the main page */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 400px;
+            padding: 2rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-header h1 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+
+        .auth-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .auth-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form input, .auth-form select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .auth-form input:focus, .auth-form select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .auth-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .auth-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .auth-tab {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Header -->
+        <div class="auth-header">
+            <h1>Welcome to UniHub</h1>
+            <p>Signup or Login to access your account</p>
+        </div>
+
+        <!-- Tabs for Signup/Login -->
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-form="signup">Signup</div>
+            <div class="auth-tab" data-form="login">Login</div>
+        </div>
+
+        <!-- Signup Form -->
+        <form class="auth-form active" id="signupForm">
+            <select id="userType" required>
+                <option value="" disabled selected>Select User Type</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="staff">Staff</option>
+            </select>
+            <input type="text" placeholder="Full Name" required>
+            <input type="email" placeholder="Email Address" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Confirm Password" required>
+            <button type="submit">Signup</button>
+        </form>
+
+        <!-- Login Form -->
+        <form class="auth-form" id="loginForm">
+            <select id="userTypeLogin" required>
+                <option value="" disabled selected>Select User Type</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="staff">Staff</option>
+            </select>
+            <input type="email" placeholder="Email Address" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <p>By signing up, you agree to our <a href="#">Terms & Conditions</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between Signup and Login forms
+        const tabs = document.querySelectorAll(".auth-tab");
+        const forms = document.querySelectorAll(".auth-form");
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                // Remove active class from all tabs and forms
+                tabs.forEach(t => t.classList.remove("active"));
+                forms.forEach(form => form.classList.remove("active"));
+
+                // Add active class to the clicked tab and corresponding form
+                tab.classList.add("active");
+                const formId = tab.getAttribute("data-form");
+                document.getElementById(`${formId}Form`).classList.add("active");
+            });
+        });
+
+        // Handle form submission
+        const signupForm = document.getElementById("signupForm");
+        const loginForm = document.getElementById("loginForm");
+
+        signupForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            alert("Signup successful! Redirecting...");
+            // Add logic to handle signup
+        });
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            alert("Login successful! Redirecting...");
+            // Add logic to handle login
+        });
+    </script>
+</body>
+</html>

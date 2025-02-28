@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Campus Map</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-color);
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .map-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .map-sidebar {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .filter-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark-color);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-option {
+            background-color: var(--light-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-option:hover, .filter-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .location-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .location-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .location-item:hover {
+            background-color: #f5f7fa;
+        }
+
+        .location-name {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .location-details {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .map-view {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .map-image {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .map-control-button {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: none;
+            outline: none;
+        }
+
+        .ar-prompt {
+            padding: 1.5rem;
+            background-color: var(--light-color);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .ar-prompt-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ar-prompt-content p {
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+        }
+
+        .ar-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .ar-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .popular-places {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .popular-places h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .place-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .place-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .place-image {
+            height: 150px;
+            background-color: #e0e0e0;
+            position: relative;
+        }
+
+        .place-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .place-content {
+            padding: 1rem;
+        }
+
+        .place-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .place-content p {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .directions-button {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .map-container {
+                grid-template-columns: 1fr;
+            }
+
+            .map-image {
+                height: 350px;
+            }
+
+            .places-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        /* Building markers on map */
+        .building-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .building-marker:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: var(--secondary-color);
+        }
+
+        /* Building tooltip */
+        .building-tooltip {
+            position: absolute;
+            background-color: white;
+            border-radius: 4px;
+            padding: 0.8rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            width: 200px;
+            transform: translateY(-100%);
+            margin-top: -10px;
+        }
+
+        .tooltip-title {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .tooltip-details {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tooltip-button {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: none;
+            cursor: pointer;
+        }
+
+        .tooltip-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* AR view overlay */
+        .ar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .ar-camera-view {
+            width: 100%;
+            max-width: 500px;
+            height: 70vh;
+            background-color: #1a1a1a;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .ar-camera-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: var(--gray-color);
+        }
+
+        .ar-camera-placeholder p {
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ar-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ar-control-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .ar-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* AR information cards */
+        .ar-info-card {
+            position: absolute;
+            background-color: white;
+            color: var(--dark-color);
+            border-radius: 8px;
+            padding: 0.8rem;
+            width: 220px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .ar-info-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .ar-info-card p {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .ar-info-button {
+            padding: 0.4rem 0.8rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* AR building tags */
+        .ar-building-tag {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ar-tag-label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .ar-tag-line {
+            width: 2px;
+            height: 50px;
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">UH</div>
+                <span>UniHub</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Schedule</a></li>
+                    <li><a href="#">Cafeteria</a></li>
+                    <li><a href="#">Transport</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#" class="active">Campus Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Campus Map</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Home</a> /</li>
+                <li>Campus Map</li>
+            </ul>
+        </div>
+
+        <div class="map-container">
+            <div class="map-sidebar">
+                <div class="search-box">
+                    <input type="text" placeholder="Search buildings, classrooms, offices...">
+                </div>
+
+                <div class="filter-section">
+                    <h3>Filter By</h3>
+                    <div class="filter-options">
+                        <div class="filter-option active">All</div>
+                        <div class="filter-option">Academic</div>
+                        <div class="filter-option">Administrative</div>
+                        <div class="filter-option">Libraries</div>
+                        <div class="filter-option">Cafeterias</div>
+                        <div class="filter-option">Dorms</div>
+                        <div class="filter-option">Parking</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Nearby Locations</h3>
+                    <div class="location-list">
+                        <div class="location-item">
+                            <div class="location-name">Science Building</div>
+                            <div class="location-details">Academic • 5 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Central Library</div>
+                            <div class="location-details">Library • 8 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Student Union</div>
+                            <div class="location-details">Services • 3 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Engineering Building</div>
+                            <div class="location-details">Academic • 10 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Main Cafeteria</div>
+                            <div class="location-details">Food • 6 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Arts Complex</div>
+                            <div class="location-details">Academic • 12 min walk from you</div>
+                        </div>
+                        <div class="location-item">
+                            <div class="location-name">Gymnasium</div>
+                            <div class="location-details">Sports • 15 min walk from you</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-view">
+                <div class="map-image">
+                    <img src="/api/placeholder/800/500" alt="Campus map">
+                    
+                    <!-- Building markers -->
+                    <div class="building-marker" style="top: 35%; left: 25%;">A</div>
+                    <div class="building-marker" style="top: 45%; left: 40%;">B</div>
+                    <div class="building-marker" style="top: 65%; left: 30%;">C</div>
+                    <div class="building-marker" style="top: 50%; left: 60%;">D</div>
+                    <div class="building-marker" style="top: 25%; left: 70%;">E</div>
+                    
+                    <!-- Building tooltip (example) -->
+                    <div class="building-tooltip" style="top: 45%; left: 40%;">
+                        <div class="tooltip-title">Building B - Engineering</div>
+                        <div class="tooltip-details">
+                            Contains classrooms B101-B410, Engineering faculty offices, and Computer Labs
+                        </div>
+                        <div class="tooltip-actions">
+                            <button class="tooltip-button">Details</button>
+                            <button class="tooltip-button primary">Directions</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-controls">
+                    <button class="map-control-button">+</button>
+                    <button class="map-control-button">-</button>
+                    <button class="map-control-button">⊕</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ar-prompt">
+            <div class="ar-prompt-content">
+                <h3>Try AR Navigation!</h3>
+                <p>Point your camera at buildings to get real-time information and directions.</p>
+                <button class="ar-button" onclick="document.getElementById('arOverlay').style.display='flex'">
+                    <span>Open AR View</span> 📱
+                </button>
+            </div>
+        </div>
+
+        <div class="popular-places">
+            <h2>Popular Destinations</h2>
+            <div class="places-grid">
+                <div class="place-card">
+                    <div class="place-image">
+                        <img src="/api/placeholder/250/150" alt="Central Library">
+                        <span class="place-badge">Popular</span>
+                    </div>
+                    <div class="place-content">
+                        <h3>Central Library</h3>
+                        <p>Open 24/7 • Building E</p>
+                        <a href="#" class="directions-button">Get Directions →</a>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <div class="place-image">
+                        <img src="/api/placeholder/250/150" alt="Student Union">
+                    </div>
+                    <div class="place-content">
+                        <h3>Student Union</h3>
+                        <p>Open 7AM-10PM • Building C</p>
+                        <a href="#" class="directions-button">Get Directions →</a>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <div class="place-image">
+                        <img src="/api/placeholder/250/150" alt="Science Labs">
+                    </div>
+                    <div class="place-content">
+                        <h3>Science Labs</h3>
+                        <p>Open 8AM-8PM • Building A</p>
+                        <a href="#" class="directions-button">Get Directions →</a>
+                    </div>
+                </div>
+                <div class="place-card">
+                    <div class="place-image">
+                        <img src="/api/placeholder/250/150" alt="Main Cafeteria">
+                    </div>
+                    <div class="place-content">
+                        <h3>Main Cafeteria</h3>
+                        <p>Open 7AM-9PM • Building D</p>
+                        <a href="#" class="directions-button">Get Directions →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AR View Overlay -->
+    <div id="arOverlay" class="ar-overlay">
+        <div class="ar-camera-view">
+            <button class="ar-close-button" onclick="document.getElementById('arOverlay').style.display='none'">×</button>
+            
+            <div class="ar-camera-placeholder">
+                📱
+                <p>Camera view would appear here</p>
+            </div>
+            
+            <!-- AR building tags -->
+            <div class="ar-building-tag" style="top: 30%; left: 25%;">
+                <div class="ar-tag-label">Science Building</div>
+                <div class="ar-tag-line"></div>
+            </div>
+            
+            <div class="ar-building-tag" style="top: 60%; left: 70%;">
+                <div class="ar-tag-label">Student Union</div>
+                <div class="ar-tag-line"></div>
+            </div>
+            
+            <!-- AR information card -->
+            <div class="ar-info-card" style="bottom: 20%; left: 50%; transform: translateX(-50%);">
+                <h3>Engineering Building</h3>
+                <p>Contains Labs, Classrooms, and Faculty Offices</p>
+                <p>Current occupancy: 65%</p>
+                <button class="ar-info-button">Get Directions</button>
+            </div>
+        </div>
+        
+        <div class="ar-controls">
+            <button class="ar-control-button">🔍</button>
+            <button class="ar-control-button">📍</button>
+            <button class="ar-control-button">ℹ️</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 UniHub - Your All-in-One University Companion</p>
+        <p>Developed for NEOFETCH Hackathon Inventious 4.1</p>
+    </footer>
+</body>
+</html>

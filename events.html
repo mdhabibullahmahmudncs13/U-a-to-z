@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Events</title>
+    <style>
+        /* Reuse the same CSS variables and styles from the main page */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-color);
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .search-filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-option {
+            background-color: var(--light-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-option:hover, .filter-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .event-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            height: 180px;
+            background-color: #e0e0e0;
+            position: relative;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .event-content p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+        }
+
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-details span {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .event-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .event-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .event-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-options {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">UH</div>
+                <span>UniHub</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Schedule</a></li>
+                    <li><a href="#">Cafeteria</a></li>
+                    <li><a href="#">Transport</a></li>
+                    <li><a href="#" class="active">Events</a></li>
+                    <li><a href="#">Campus Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>University Events</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Home</a> /</li>
+                <li>Events</li>
+            </ul>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search events...">
+            </div>
+            <div class="filter-options">
+                <div class="filter-option active" data-filter="all">All</div>
+                <div class="filter-option" data-filter="academic">Academic</div>
+                <div class="filter-option" data-filter="cultural">Cultural</div>
+                <div class="filter-option" data-filter="sports">Sports</div>
+                <div class="filter-option" data-filter="workshops">Workshops</div>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid" id="eventsGrid">
+            <!-- Event Cards will be dynamically populated here -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <button onclick="changePage(1)">1</button>
+            <button onclick="changePage(2)">2</button>
+            <button onclick="changePage(3)">3</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 UniHub - Your All-in-One University Companion</p>
+        <p>Developed for NEOFETCH Hackathon Inventious 4.1</p>
+    </footer>
+
+    <script>
+        // Sample event data
+        const events = [
+            { id: 1, title: "Tech Talk: AI in 2025", category: "academic", date: "2025-10-15", time: "3:00 PM", location: "Main Auditorium", image: "/api/placeholder/300/180", badge: "Upcoming" },
+            { id: 2, title: "Cultural Fest 2025", category: "cultural", date: "2025-10-20", time: "10:00 AM", location: "University Grounds", image: "/api/placeholder/300/180", badge: "Popular" },
+            { id: 3, title: "Hackathon 2025", category: "academic", date: "2025-11-05", time: "9:00 AM", location: "Computer Science Building", image: "/api/placeholder/300/180" },
+            { id: 4, title: "Football Tournament", category: "sports", date: "2025-10-25", time: "2:00 PM", location: "University Stadium", image: "/api/placeholder/300/180" },
+            { id: 5, title: "Startup Workshop", category: "workshops", date: "2025-11-10", time: "11:00 AM", location: "Business School", image: "/api/placeholder/300/180" },
+            { id: 6, title: "Music Night", category: "cultural", date: "2025-10-30", time: "7:00 PM", location: "Student Union", image: "/api/placeholder/300/180" },
+        ];
+
+        // Function to render events
+        function renderEvents(filteredEvents) {
+            const eventsGrid = document.getElementById("eventsGrid");
+            eventsGrid.innerHTML = "";
+
+            filteredEvents.forEach(event => {
+                const eventCard = `
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="${event.image}" alt="${event.title}">
+                            ${event.badge ? `<span class="event-badge">${event.badge}</span>` : ""}
+                        </div>
+                        <div class="event-content">
+                            <h3>${event.title}</h3>
+                            <p>${event.description || "Join us for an exciting event!"}</p>
+                            <div class="event-details">
+                                <span><strong>Date:</strong> ${event.date}</span>
+                                <span><strong>Time:</strong> ${event.time}</span>
+                                <span><strong>Location:</strong> ${event.location}</span>
+                            </div>
+                            <div class="event-actions">
+                                <button class="event-button primary">RSVP</button>
+                                <button class="event-button">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                eventsGrid.innerHTML += eventCard;
+            });
+        }
+
+        // Initial render
+        renderEvents(events);
+
+        // Filter events by category
+        const filterOptions = document.querySelectorAll(".filter-option");
+        filterOptions.forEach(option => {
+            option.addEventListener("click", () => {
+                filterOptions.forEach(opt => opt.classList.remove("active"));
+                option.classList.add("active");
+
+                const filter = option.getAttribute("data-filter");
+                const filteredEvents = filter === "all" ? events : events.filter(event => event.category === filter);
+                renderEvents(filteredEvents);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.toLowerCase();
+            const filteredEvents = events.filter(event => event.title.toLowerCase().includes(query));
+            renderEvents(filteredEvents);
+        });
+
+        // Pagination (example)
+        function changePage(page) {
+            console.log(`Loading page ${page}...`);
+            // Implement pagination logic here
+        }
+    </script>
+</body>
+</html>

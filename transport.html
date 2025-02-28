@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Transport</title>
+    <style>
+        /* Reuse the same CSS variables and styles from the main page */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-color);
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .transport-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .transport-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .transport-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .transport-image {
+            height: 180px;
+            background-color: #e0e0e0;
+            position: relative;
+        }
+
+        .transport-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .transport-content {
+            padding: 1.5rem;
+        }
+
+        .transport-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .transport-content p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+        }
+
+        .transport-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .transport-details span {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .transport-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .transport-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .transport-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .transport-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .real-time-tracking {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .real-time-tracking h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .tracking-map {
+            height: 300px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tracking-map img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tracking-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tracking-control-button {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: none;
+            outline: none;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .transport-options {
+                grid-template-columns: 1fr;
+            }
+
+            .tracking-map {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">UH</div>
+                <span>UniHub</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Schedule</a></li>
+                    <li><a href="#">Cafeteria</a></li>
+                    <li><a href="#" class="active">Transport</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Campus Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Transport</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Home</a> /</li>
+                <li>Transport</li>
+            </ul>
+        </div>
+
+        <!-- Transport Options -->
+        <div class="transport-options">
+            <!-- Bus Schedule -->
+            <div class="transport-card">
+                <div class="transport-image">
+                    <img src="/api/placeholder/300/180" alt="Bus Schedule">
+                </div>
+                <div class="transport-content">
+                    <h3>Bus Schedule</h3>
+                    <p>View real-time bus schedules and plan your commute.</p>
+                    <div class="transport-details">
+                        <span><strong>Next Bus:</strong> 10:00 AM</span>
+                        <span><strong>Route:</strong> Main Campus → Dorms</span>
+                    </div>
+                    <div class="transport-actions">
+                        <button class="transport-button primary">View Schedule</button>
+                        <button class="transport-button">Track Bus</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shuttle Service -->
+            <div class="transport-card">
+                <div class="transport-image">
+                    <img src="/api/placeholder/300/180" alt="Shuttle Service">
+                </div>
+                <div class="transport-content">
+                    <h3>Shuttle Service</h3>
+                    <p>On-demand shuttle service for quick campus travel.</p>
+                    <div class="transport-details">
+                        <span><strong>Availability:</strong> 7:00 AM - 10:00 PM</span>
+                        <span><strong>Stops:</strong> 10+ locations</span>
+                    </div>
+                    <div class="transport-actions">
+                        <button class="transport-button primary">Book Shuttle</button>
+                        <button class="transport-button">Track Shuttle</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bike Rentals -->
+            <div class="transport-card">
+                <div class="transport-image">
+                    <img src="/api/placeholder/300/180" alt="Bike Rentals">
+                </div>
+                <div class="transport-content">
+                    <h3>Bike Rentals</h3>
+                    <p>Rent a bike for eco-friendly campus travel.</p>
+                    <div class="transport-details">
+                        <span><strong>Price:</strong> $1/hour</span>
+                        <span><strong>Stations:</strong> 5+ across campus</span>
+                    </div>
+                    <div class="transport-actions">
+                        <button class="transport-button primary">Rent Bike</button>
+                        <button class="transport-button">Locate Stations</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-Time Tracking -->
+        <div class="real-time-tracking">
+            <h2>Real-Time Bus Tracking</h2>
+            <div class="tracking-map">
+                <img src="/api/placeholder/800/300" alt="Campus Map">
+                <div class="tracking-controls">
+                    <button class="tracking-control-button">+</button>
+                    <button class="tracking-control-button">-</button>
+                    <button class="tracking-control-button">📍</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 UniHub - Your All-in-One University Companion</p>
+        <p>Developed for NEOFETCH Hackathon Inventious 4.1</p>
+    </footer>
+</body>
+</html>

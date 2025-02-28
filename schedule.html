@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Schedule</title>
+    <style>
+        /* Reuse the same CSS variables and styles from the main page */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-color);
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .schedule-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .schedule-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-table th {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .schedule-table td {
+            color: var(--gray-color);
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f5f7fa;
+        }
+
+        .deadlines-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .deadlines-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .deadlines-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .deadline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .deadline-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .deadline-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .deadline-title {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .deadline-date {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .deadline-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .deadline-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .deadline-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .exams-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .exams-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .exams-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .exam-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .exam-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .exam-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .exam-title {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .exam-date {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .exam-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .exam-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .exam-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .schedule-table th, .schedule-table td {
+                padding: 0.5rem;
+            }
+
+            .deadline-item, .exam-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">UH</div>
+                <span>UniHub</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#" class="active">Schedule</a></li>
+                    <li><a href="#">Cafeteria</a></li>
+                    <li><a href="#">Transport</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Campus Map</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Schedule</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Home</a> /</li>
+                <li>Schedule</li>
+            </ul>
+        </div>
+
+        <!-- Class Schedule Section -->
+        <div class="schedule-section">
+            <h2>Class Schedule</h2>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Course</th>
+                        <th>Location</th>
+                        <th>Instructor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>9:00 AM - 10:30 AM</td>
+                        <td>Computer Science 101</td>
+                        <td>Building A, Room 101</td>
+                        <td>Dr. Smith</td>
+                    </tr>
+                    <tr>
+                        <td>11:00 AM - 12:30 PM</td>
+                        <td>Mathematics 202</td>
+                        <td>Building B, Room 205</td>
+                        <td>Prof. Johnson</td>
+                    </tr>
+                    <tr>
+                        <td>1:00 PM - 2:30 PM</td>
+                        <td>Physics 301</td>
+                        <td>Building C, Room 310</td>
+                        <td>Dr. Brown</td>
+                    </tr>
+                    <tr>
+                        <td>3:00 PM - 4:30 PM</td>
+                        <td>Literature 105</td>
+                        <td>Building D, Room 120</td>
+                        <td>Prof. Davis</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Assignment Deadlines Section -->
+        <div class="deadlines-section">
+            <h2>Assignment Deadlines</h2>
+            <div class="deadlines-list">
+                <!-- Deadline 1 -->
+                <div class="deadline-item">
+                    <div class="deadline-details">
+                        <div class="deadline-title">CS101 - Final Project</div>
+                        <div class="deadline-date">Due: 2025-12-15</div>
+                    </div>
+                    <div class="deadline-actions">
+                        <button class="deadline-button">View Details</button>
+                        <button class="deadline-button">Submit</button>
+                    </div>
+                </div>
+
+                <!-- Deadline 2 -->
+                <div class="deadline-item">
+                    <div class="deadline-details">
+                        <div class="deadline-title">Math202 - Problem Set 5</div>
+                        <div class="deadline-date">Due: 2025-11-30</div>
+                    </div>
+                    <div class="deadline-actions">
+                        <button class="deadline-button">View Details</button>
+                        <button class="deadline-button">Submit</button>
+                    </div>
+                </div>
+
+                <!-- Deadline 3 -->
+                <div class="deadline-item">
+                    <div class="deadline-details">
+                        <div class="deadline-title">Physics301 - Lab Report</div>
+                        <div class="deadline-date">Due: 2025-12-10</div>
+                    </div>
+                    <div class="deadline-actions">
+                        <button class="deadline-button">View Details</button>
+                        <button class="deadline-button">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exam Schedule Section -->
+        <div class="exams-section">
+            <h2>Exam Schedule</h2>
+            <div class="exams-list">
+                <!-- Exam 1 -->
+                <div class="exam-item">
+                    <div class="exam-details">
+                        <div class="exam-title">CS101 - Final Exam</div>
+                        <div class="exam-date">Date: 2025-12-20, 9:00 AM</div>
+                    </div>
+                    <div class="exam-actions">
+                        <button class="exam-button">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Exam 2 -->
+                <div class="exam-item">
+                    <div class="exam-details">
+                        <div class="exam-title">Math202 - Midterm Exam</div>
+                        <div class="exam-date">Date: 2025-11-25, 11:00 AM</div>
+                    </div>
+                    <div class="exam-actions">
+                        <button class="exam-button">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Exam 3 -->
+                <div class="exam-item">
+                    <div class="exam-details">
+                        <div class="exam-title">Physics301 - Final Exam</div>
+                        <div class="exam-date">Date: 2025-12-18, 1:00 PM</div>
+                    </div>
+                    <div class="exam-actions">
+                        <button class="exam-button">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 UniHub - Your All-in-One University Companion</p>
+        <p>Developed for NEOFETCH Hackathon Inventious 4.1</p>
+    </footer>
+</body>
+</html>
