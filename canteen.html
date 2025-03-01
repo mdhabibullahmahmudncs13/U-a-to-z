@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCafe - University Canteen Management</title>
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+            background-color: var(--light);
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a75e0;
+        }
+        
+        .btn-outline {
+            background-color: white;
+            border: 1px solid #ddd;
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #2a9000;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .menu-item {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-img {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .menu-info {
+            padding: 1rem;
+        }
+        
+        .menu-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .menu-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .price {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-veg {
+            background-color: #e6f7e6;
+            color: #38b000;
+        }
+        
+        .badge-nonveg {
+            background-color: #ffe6eb;
+            color: #ff006e;
+        }
+        
+        .actions {
+            display: flex;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+        
+        .toggle-section {
+            border-top: 1px solid #eee;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+        
+        .nutrition {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .nutrition-item {
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .nutrition-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .nutrition-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            font-weight: 500;
+        }
+        
+        .banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/300');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .banner h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .banner p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem auto;
+        }
+        
+        .cart-summary {
+            position: sticky;
+            top: 5rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-name {
+            flex: 1;
+        }
+        
+        .cart-item-qty {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .cart-item-price {
+            width: 80px;
+            text-align: right;
+            font-weight: 500;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .time-slot {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .time-slot.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .time-slot:hover:not(.selected) {
+            background-color: #f5f5f5;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <span>UniCafe</span>
+            </div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Today's Menu</a>
+                <a href="#">My Orders</a>
+                <a href="#">Meal Plans</a>
+                <a href="#">Feedback</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="banner">
+            <h2>Today's Special: Mediterranean Bowl</h2>
+            <p>Enjoy our chef's special Mediterranean bowl with falafel, hummus, and fresh vegetables. Available for lunch and dinner.</p>
+            <button class="btn btn-primary">Pre-order Now</button>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Today's Menu (March 1, 2025)</h2>
+                <span>Operating Hours: 7:30 AM - 9:00 PM</span>
+            </div>
+            <div class="card-body">
+                <div class="tabs">
+                    <div class="tab active">Breakfast (7:30 AM - 10:30 AM)</div>
+                    <div class="tab">Lunch (11:30 AM - 2:30 PM)</div>
+                    <div class="tab">Dinner (5:30 PM - 9:00 PM)</div>
+                </div>
+                
+                <div class="filter-bar">
+                    <button class="btn btn-outline">All Items</button>
+                    <button class="btn btn-outline">Vegetarian</button>
+                    <button class="btn btn-outline">Non-Vegetarian</button>
+                    <button class="btn btn-outline">Gluten-Free</button>
+                    <div style="flex: 1;"></div>
+                    <button class="btn btn-outline">Sort by: Popularity</button>
+                </div>
+                
+                <div class="menu-grid">
+                    <!-- Menu Item 1 -->
+                    <div class="menu-item">
+                        <img src="/api/placeholder/300/180" alt="Avocado Toast" class="menu-img">
+                        <div class="menu-info">
+                            <div class="menu-title">Avocado Toast</div>
+                            <div class="menu-desc">Smashed avocado on whole grain toast with cherry tomatoes and a sprinkle of feta cheese.</div>
+                            <div class="menu-footer">
+                                <span class="price">$6.50</span>
+                                <span class="badge badge-veg">Vegetarian</span>
+                            </div>
+                            <div class="toggle-section">
+                                <div class="nutrition">
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">320</div>
+                                        <div class="nutrition-label">Calories</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">12g</div>
+                                        <div class="nutrition-label">Protein</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">18g</div>
+                                        <div class="nutrition-label">Fat</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">32g</div>
+                                        <div class="nutrition-label">Carbs</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-primary">Add to Cart</button>
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Item 2 -->
+                    <div class="menu-item">
+                        <img src="/api/placeholder/300/180" alt="Breakfast Burrito" class="menu-img">
+                        <div class="menu-info">
+                            <div class="menu-title">Breakfast Burrito</div>
+                            <div class="menu-desc">Scrambled eggs, roasted potatoes, black beans, cheese, and salsa wrapped in a warm tortilla.</div>
+                            <div class="menu-footer">
+                                <span class="price">$7.95</span>
+                                <span class="badge badge-nonveg">Non-Veg</span>
+                            </div>
+                            <div class="toggle-section">
+                                <div class="nutrition">
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">480</div>
+                                        <div class="nutrition-label">Calories</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">22g</div>
+                                        <div class="nutrition-label">Protein</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">16g</div>
+                                        <div class="nutrition-label">Fat</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">58g</div>
+                                        <div class="nutrition-label">Carbs</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-primary">Add to Cart</button>
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Item 3 -->
+                    <div class="menu-item">
+                        <img src="/api/placeholder/300/180" alt="Greek Yogurt Parfait" class="menu-img">
+                        <div class="menu-info">
+                            <div class="menu-title">Greek Yogurt Parfait</div>
+                            <div class="menu-desc">Layered Greek yogurt with fresh berries, granola, and a drizzle of honey.</div>
+                            <div class="menu-footer">
+                                <span class="price">$5.25</span>
+                                <span class="badge badge-veg">Vegetarian</span>
+                            </div>
+                            <div class="toggle-section">
+                                <div class="nutrition">
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">290</div>
+                                        <div class="nutrition-label">Calories</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">15g</div>
+                                        <div class="nutrition-label">Protein</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">7g</div>
+                                        <div class="nutrition-label">Fat</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">42g</div>
+                                        <div class="nutrition-label">Carbs</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-primary">Add to Cart</button>
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Item 4 -->
+                    <div class="menu-item">
+                        <img src="/api/placeholder/300/180" alt="Omelette Station" class="menu-img">
+                        <div class="menu-info">
+                            <div class="menu-title">Custom Omelette</div>
+                            <div class="menu-desc">Made-to-order omelette with your choice of fillings: cheese, vegetables, and protein options.</div>
+                            <div class="menu-footer">
+                                <span class="price">$8.75</span>
+                                <span class="badge badge-nonveg">Non-Veg</span>
+                            </div>
+                            <div class="toggle-section">
+                                <div class="nutrition">
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">350+</div>
+                                        <div class="nutrition-label">Calories</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">24g+</div>
+                                        <div class="nutrition-label">Protein</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">22g+</div>
+                                        <div class="nutrition-label">Fat</div>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <div class="nutrition-value">8g+</div>
+                                        <div class="nutrition-label">Carbs</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-primary">Add to Cart</button>
+                                <button class="btn btn-outline">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Pre-order Your Meal</h2>
+                </div>
+                <div class="card-body">
+                    <p>Skip the line! Pre-order your meal and pick it up at your preferred time.</p>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 0.5rem;">Select Pick-up Time</h3>
+                        <div class="time-slots">
+                            <div class="time-slot">8:00 AM</div>
+                            <div class="time-slot">8:30 AM</div>
+                            <div class="time-slot selected">9:00 AM</div>
+                            <div class="time-slot">9:30 AM</div>
+                            <div class="time-slot">10:00 AM</div>
+                            <div class="time-slot">10:30 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 0.5rem;">Special Instructions</h3>
+                        <textarea style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; resize: vertical;" rows="3" placeholder="Any allergies or special preparation requests?"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-success" style="margin-top: 1.5rem; width: 100%;">Place Pre-order</button>
+                </div>
+            </div>
+            
+            <div class="card cart-summary">
+                <div class="card-header">
+                    <h2 class="card-title">Your Cart</h2>
+                </div>
+                <div class="card-body">
+                    <div class="cart-item">
+                        <div class="cart-item-name">Avocado Toast</div>
+                        <div class="cart-item-qty">1</div>
+                        <div class="cart-item-price">$6.50</div>
+                    </div>
+                    <div class="cart-item">
+                        <div class="cart-item-name">Greek Yogurt Parfait</div>
+                        <div class="cart-item-qty">1</div>
+                        <div class="cart-item-price">$5.25</div>
+                    </div>
+                    
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span>$11.75</span>
+                    </div>
+                    
+                    <button class="btn btn-success" style="width: 100%; margin-top: 1rem;">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple JavaScript to handle tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+        
+        // Handle time slot selection
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', () => {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
