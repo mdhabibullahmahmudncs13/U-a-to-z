@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEOFETCH - University App Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+        }
+
+        .app-branding {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+
+        .app-tagline {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #1e293b;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .forgot-password a {
+            color: #2563eb;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-primary:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        .signup-prompt {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .signup-prompt a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .signup-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e2e8f0;
+        }
+
+        .divider-text {
+            padding: 0 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .alt-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .alt-login-btn {
+            background-color: white;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+        }
+
+        .alt-login-btn:hover {
+            background-color: #f8fafc;
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- App Branding -->
+        <div class="app-branding">
+            <div class="app-logo">NEOFETCH</div>
+            <div class="app-tagline">All-in-One University App</div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message"></div>
+
+        <!-- Login Form -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email or Student ID</label>
+                <input type="text" id="email" placeholder="Enter your email or student ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+
+            <button type="submit" id="login-button" class="btn btn-primary">Sign In</button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="signup-prompt">
+            Don't have an account? <a href="#">Sign up</a>
+        </div>
+
+        <!-- Alternative Login Methods -->
+        <div class="divider">
+            <span class="divider-text">Or continue with</span>
+        </div>
+
+        <div class="alt-login">
+            <button class="btn alt-login-btn">University SSO</button>
+            <button class="btn alt-login-btn">Student Portal</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const errorMessage = document.getElementById('error-message');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset error message
+                errorMessage.style.display = 'none';
+                
+                // Get form values
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                // Disable button and show loading state
+                loginButton.disabled = true;
+                loginButton.textContent = 'Signing in...';
+                
+                // Simulate authentication process (replace with actual API call)
+                setTimeout(function() {
+                    // For demo purposes - in a real app, you'd validate with your backend
+                    if (email && password) {
+                        // Successful login simulation
+                        console.log('Login successful!');
+                        // Redirect to dashboard (replace with actual redirect)
+                        // window.location.href = 'dashboard.html';
+                        alert('Login successful! Redirecting to dashboard...');
+                    } else {
+                        // Show error message
+                        errorMessage.textContent = 'Invalid credentials. Please try again.';
+                        errorMessage.style.display = 'block';
+                    }
+                    
+                    // Reset button state
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Sign In';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
